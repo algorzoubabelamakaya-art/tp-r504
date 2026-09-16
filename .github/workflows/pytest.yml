@@ -14,4 +14,4 @@ jobs:
       - name: affichage branche
         run: echo "Nom branche:${{ github.ref }}"
 
-      - run: echo "OS: ${{ runner.os }}"
+      - run: echo "OS:${{ runner.os }}"
