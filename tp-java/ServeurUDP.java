@@ -15,6 +15,12 @@ public class ServeurUDP
 				sock.receive( packet );
 				String str = new String( packet.getData() );
 				System.out.println( "str=" + str );
+
+				InetAddress addrClient = packet.getAddress();
+				int portClient = packet.getPort();
+				byte[] data = str.getBytes();
+				DatagramPacket reponse = new DatagramPacket( data, data.length, addrClient, portClient );
+				sock.send( reponse );
 			}
 		}
 		catch( Exception ex )
