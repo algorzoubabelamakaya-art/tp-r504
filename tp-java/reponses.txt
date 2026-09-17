@@ -1,0 +1,22 @@
+TP9 - Sockets UDP et TCP en Java
+Reponses aux questions
+
+Q2.1 - Le client s'execute normalement, sans erreur affichee. Il affiche juste
+l'adresse locale puis se termine. Le paquet UDP est envoye mais personne
+ne le recoit : en mode UDP (non connecte), il n'y a aucune verification
+de reception, contrairement a TCP qui etablirait une connexion prealable
+et leverait une erreur si le serveur n'est pas disponible.
+
+
+Q2.2 - Quel est le numero de port utilise ? Est-ce un choix pertinent ?
+Le port utilise est 1234 
+Cependant, ce n'est pas forcement le choix le plus
+pertinent en pratique : 1234 est une suite de chiffres tres previsible/
+connue, souvent deja utilisee dans des exemples ou par d'autres services
+de test, ce qui augmente le risque de collision avec un autre programme.
+
+Q2.3 - Modification pour que le serveur renvoie la chaine recue au client
+Fait : le serveur recupere l'adresse et le port du client via
+packet.getAddress() et packet.getPort(), puis renvoie la meme chaine avec
+sock.send(). Le client attend cette reponse avec sock.receive() avant de
+fermer son socket.
