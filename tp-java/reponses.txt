@@ -16,7 +16,40 @@ connue, souvent deja utilisee dans des exemples ou par d'autres services
 de test, ce qui augmente le risque de collision avec un autre programme.
 
 Q2.3 - Modification pour que le serveur renvoie la chaine recue au client
-Fait : le serveur recupere l'adresse et le port du client via
-packet.getAddress() et packet.getPort(), puis renvoie la meme chaine avec
+Fait : le serveur recupere l'adresse et le port du client via packet.getAddress() et packet.getPort(), puis renvoie la meme chaine avec
 sock.send(). Le client attend cette reponse avec sock.receive() avant de
 fermer son socket.
+
+
+Q4.1 - Verification du fonctionnement en tapant java Clienthttp www.univ-rouen.fr
+Le programme se connecte et recoit bien une reponse HTTP, mais pas la page attendue : le serveur renvoie un code 302 (redirection vers https), et notre
+programme ne suit pas les redirections automatiquement, contrairement a un navigateur
+
+Q4.2 - Le contenu du fichier est-il conforme a ce qui est attendu ?
+Partiellement car la structure respecte le protocole HTTP (statut, en-tetes,corps HTML), mais le contenu recu est une page de redirection, pas la
+vraie page du site
+
+Q4.3 - La sortie est-elle constituee uniquement d'un fichier html conforme ? Pourquoi ?
+Non car le fichier contient la ligne de statut et les en-tetes HTTP avant le HTML, car le programme affiche la reponse brute du serveur, alors qu'un
+navigateur separe automatiquement en-tetes et corps HTML
+
+4.4 - Test avec www.google.com et www.javaworld.com
+Avec www.google.com, le programme fonctionne et recoit bien la page HTML
+complete. Le contenu est beaucoup plus complexe qu'attendu : la page contient pas mal de CSS
+et de JavaScript, alors qu'un navigateur affiche une pagepropre et simple. Le charset utilise est ISO-8859-1 (pas UTF-8), et on
+voit du texte mal encode, ce qui montre que notre programme ne gere pas
+tous les encodages correctement
+
+Q4.5 - Pourquoi obtient-on des resultats differents d'un navigateur ?
+Plusieurs raisons : Le programme ne suit pas automatiquement les redirections HTTP ; il n'envoie pas de User-Agent, alors qu'un navigateur s'identifie toujours ; et il n'execute aucun JavaScript,alors que de nombreux sites modernes chargent une partie de leur contenu dynamiquement cote client. Le navigateur interprete aussi tout
+le CSS/JS pour afficher une page propre, alors que notre programme affiche juste le texte brut recu.
+
+Q4.6 - Analyse des en-tetes de la reponse de www.univ-rouen.fr
+Date : date et heure d'envoi de la reponse par le serveur
+Server : nom du logiciel serveur utilise (Apache)
+Strict-Transport-Security : force le navigateur a utiliser https pour ce site pendant une duree donnee (HSTS), ce qui explique en partie la
+redirection observee
+Location : indique la nouvelle adresse a suivre, utilise avec le statut 302 recu
+Content-Length : taille en octets du corps du message renvoye
+Connection : close, le serveur ferme la connexion apres la reponse au lieu de la garder ouverte
+Content-Type : precise que le contenu est du HTML, encode en iso-8859-1.
